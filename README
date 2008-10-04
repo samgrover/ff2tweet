@@ -1,0 +1,16 @@
+Twitter API code is from http://mike.verdone.ca/twitter/
+FriendFeed API code is from http://code.google.com/p/friendfeed-api/
+
+The ff2tweet.ini file holds the configuration parameters and should be formatted as follows:
+## START ##
+[twitter]
+username: <twitter username>
+password: <twitter password>
+
+[friendfeed]
+username: <friendfeed username>
+remotekey: <friendfeed remotekey>
+
+[files]
+last_entry: <path of the file that holds last published ff id>
+## END ##

@@ -1,23 +1,22 @@
 #!/usr/bin/env python
 #
 # This tool takes some posts made to FriendFeed and converts it into a tweet for Twitter.
-# Twitter API code is from http://mike.verdone.ca/twitter/
-# FriendFeed API code is from http://code.google.com/p/friendfeed-api/
 
 from friendfeed import *
+from ConfigParser import ConfigParser
 import re
 import urllib2
 import twitter
 
-# Enter the info below to customize
-TWITTER_USERNAME = 'samgrover'
+# Globals
+TWITTER_USERNAME = ''
 TWITTER_PASSWORD = ''
-FRIENDFEED_USERNAME = 'samgrover'
+FRIENDFEED_USERNAME = ''
 FRIENDFEED_REMOTEKEY = ''
+LAST_ENTRY_FILE = ""
 
 # Constants
 TWITTER_LIMIT_CHARS = 140
-LAST_ENTRY_FILE = "path to file that keeps track of last entry made"
 SOURCE_NAME = "ff2tweet"
 
 def shorten_url(link):
@@ -97,10 +96,19 @@ def format_tweet(ff_entry):
 
 # Main
 if __name__ == "__main__":
+    # Import the config file
+    config = ConfigParser()
+    config.read("ff2tweet.ini")
+    TWITTER_USERNAME = config.get("twitter", "username")
+    TWITTER_PASSWORD = config.get("twitter", "password")
+    FRIENDFEED_USERNAME = config.get("friendfeed", "username")
+    FRIENDFEED_REMOTEKEY = config.get("friendfeed", "remotekey")
+    LAST_ENTRY_FILE = config.get("files", "last_entry")
+    
     ff_service = FriendFeed()
     feed = ff_service.fetch_user_feed(FRIENDFEED_USERNAME)
 
-    # Pick the topmost internal post
+    # Pick the topmost post
     postable = None
     for entry in feed["entries"]:
         if entry["service"]["id"] == "internal" or entry["service"]["id"] == "googlereader":
@@ -118,7 +126,7 @@ if __name__ == "__main__":
             tweet = format_tweet(postable)
             if tweet is not None:
                 if post_tweet(tweet):
-		    print "Tweeted: " + tweet
+                    print "Tweeted: " + tweet
                     print len(tweet)
                     f = open(LAST_ENTRY_FILE, 'w')
                     last_entry = f.write(postable["id"])
