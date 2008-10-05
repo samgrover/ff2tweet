@@ -13,7 +13,7 @@ TWITTER_USERNAME = ''
 TWITTER_PASSWORD = ''
 FRIENDFEED_USERNAME = ''
 FRIENDFEED_REMOTEKEY = ''
-LAST_ENTRY_FILE = ""
+LAST_ENTRY_FILE = ''
 
 # Constants
 TWITTER_LIMIT_CHARS = 140
@@ -106,8 +106,11 @@ if __name__ == "__main__":
     LAST_ENTRY_FILE = config.get("files", "last_entry")
     
     ff_service = FriendFeed()
-    feed = ff_service.fetch_user_feed(FRIENDFEED_USERNAME)
-
+	try:
+        feed = ff_service.fetch_user_feed(FRIENDFEED_USERNAME)
+    except Exception:
+        exit(0)
+    
     # Pick the topmost post
     postable = None
     for entry in feed["entries"]:
