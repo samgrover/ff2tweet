@@ -7,6 +7,7 @@ from ConfigParser import ConfigParser
 import re
 import urllib2
 import twitter
+import sys
 
 # Globals
 TWITTER_USERNAME = ''
@@ -109,7 +110,7 @@ if __name__ == "__main__":
     try:
         feed = ff_service.fetch_user_feed(FRIENDFEED_USERNAME)
     except Exception:
-        exit(0)
+        sys.exit(0)
     
     # Pick the topmost post
     postable = None
