@@ -106,7 +106,7 @@ if __name__ == "__main__":
     LAST_ENTRY_FILE = config.get("files", "last_entry")
     
     ff_service = FriendFeed()
-	try:
+    try:
         feed = ff_service.fetch_user_feed(FRIENDFEED_USERNAME)
     except Exception:
         exit(0)
