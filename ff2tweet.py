@@ -9,11 +9,17 @@ import urllib2
 import twitter
 import sys
 
+import simplejson
+parse_json = lambda s: simplejson.loads(s.decode("utf-8"))
+
 # Globals
 TWITTER_USERNAME = ''
 TWITTER_PASSWORD = ''
 FRIENDFEED_USERNAME = ''
 FRIENDFEED_REMOTEKEY = ''
+BITLY_USERNAME = ''
+BITLY_APIKEY = ''
+BITLY_VERSION = ''
 LAST_ENTRY_FILE = ''
 
 # Constants
@@ -21,13 +27,25 @@ TWITTER_LIMIT_CHARS = 140
 SOURCE_NAME = "ff2tweet"
 
 def shorten_url(link):
-    api_call = "http://bit.ly/api?url=" + link
-    request = urllib2.Request(api_call)
-    stream = urllib2.urlopen(request)
-    url = stream.read()
-    stream.close()
-    return url
-
+    if BITLY_USERNAME == '':
+        api_call = "http://bit.ly/api?url=" + link
+        request = urllib2.Request(api_call)
+        stream = urllib2.urlopen(request)
+        url = stream.read()
+        stream.close()
+        return url
+    else:
+        api_call = "http://api.bit.ly/shorten?version=" + BITLY_VERSION \
+                    + "&longUrl=" + link \
+                    + "&login=" + BITLY_USERNAME \
+                    + "&apiKey=" + BITLY_APIKEY
+        request = urllib2.Request(api_call)
+        stream = urllib2.urlopen(request)
+        response = stream.read()
+        stream.close()
+        op = parse_json(response)
+        url = op["results"][link]["shortUrl"]
+        return url
 
 def post_tweet(tweet):
     tw_service = twitter.Twitter(TWITTER_USERNAME, TWITTER_PASSWORD)
@@ -104,6 +122,9 @@ if __name__ == "__main__":
     TWITTER_PASSWORD = config.get("twitter", "password")
     FRIENDFEED_USERNAME = config.get("friendfeed", "username")
     FRIENDFEED_REMOTEKEY = config.get("friendfeed", "remotekey")
+    BITLY_USERNAME = config.get("bitly", "username")
+    BITLY_APIKEY = config.get("bitly", "api_key")
+    BITLY_VERSION = config.get("bitly", "version")
     LAST_ENTRY_FILE = config.get("files", "last_entry")
     
     ff_service = FriendFeed()
