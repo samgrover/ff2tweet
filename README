@@ -1,5 +1,6 @@
 Twitter API code is from http://mike.verdone.ca/twitter/
 FriendFeed API code is from http://code.google.com/p/friendfeed-api/
+Bit.ly API is from http://code.google.com/p/bitly-api/wiki/ApiDocumentation
 
 bit.ly info below is optional.
 The ff2tweet.ini file holds the configuration parameters and should be formatted as follows:
