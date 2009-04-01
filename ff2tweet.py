@@ -9,9 +9,6 @@ import urllib2
 import twitter
 import sys
 
-import simplejson
-parse_json = lambda s: simplejson.loads(s.decode("utf-8"))
-
 # Globals
 TWITTER_USERNAME = ''
 TWITTER_PASSWORD = ''
@@ -26,26 +23,26 @@ LAST_ENTRY_FILE = ''
 TWITTER_LIMIT_CHARS = 140
 SOURCE_NAME = "ff2tweet"
 
+def do_request(api_call):
+    request = urllib2.Request(api_call)
+    stream = urllib2.urlopen(request)
+    response = stream.read()
+    stream.close()
+    return response
+
 def shorten_url(link):
     if BITLY_USERNAME == '':
         api_call = "http://bit.ly/api?url=" + link
-        request = urllib2.Request(api_call)
-        stream = urllib2.urlopen(request)
-        url = stream.read()
-        stream.close()
-        return url
+        url = do_request(api_call)
     else:
         api_call = "http://api.bit.ly/shorten?version=" + BITLY_VERSION \
                     + "&longUrl=" + link \
                     + "&login=" + BITLY_USERNAME \
                     + "&apiKey=" + BITLY_APIKEY
-        request = urllib2.Request(api_call)
-        stream = urllib2.urlopen(request)
-        response = stream.read()
-        stream.close()
+        response = do_request(api_call)
         op = parse_json(response)
         url = op["results"][link]["shortUrl"]
-        return url
+    return url
 
 def post_tweet(tweet):
     tw_service = twitter.Twitter(TWITTER_USERNAME, TWITTER_PASSWORD)

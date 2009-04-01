@@ -1,3 +1,5 @@
+ff2tweet is meant to run as a script executed regularly by a daemon/service.
+
 Twitter API code is from http://mike.verdone.ca/twitter/
 FriendFeed API code is from http://code.google.com/p/friendfeed-api/
 Bit.ly API is from http://code.google.com/p/bitly-api/wiki/ApiDocumentation
